@@ -1,0 +1,106 @@
+
+
+
+
+USE WAREHOUSE SALES_9FEB;
+USE DATABASE FIRST_ASSIGNMENT;
+USE SCHEMA PUBLIC;
+
+
+create or replace table New_sales_data_9feb
+( order_id varchar2 (50) NOT NULL PRIMARY KEY,
+order_date  varchar2 (40),
+ship_date  varchar2 (40),
+ship_mode varchar2 (55),
+customer_name varchar2 (100),
+segment varchar2 (30),
+state varchar2 (70),
+country varchar2 (100),
+market varchar2 (50),
+region varchar2 (50),
+product_id varchar2 (60),
+category varchar2 (60),
+sub_category varchar2 (60),
+product_name varchar2 (250),
+sales varchar2 (20),
+quantity int,
+discount float,
+profit float,
+shipping_cost float,
+order_priority varchar2 (30),
+year varchar2 (7) );
+
+select * from New_sales_data_9feb;
+select sum (sales) from New_sales_data_9feb;
+ 
+ DESCRIBE TABLE New_sales_data_9feb; --
+ 
+--Q 1) SET PRIMARY KEY?--
+--Ans- 1) order_id varchar2 (50) NOT NULL PRIMARY KEY, --
+
+--Q 2) CHECK THE ORDER DATE AND SHIP DATE TYPE AND THINK IN WHICH DATA TYPE YOU HAVE TO CHANGE? --
+--Ans-
+
+--------------------------------------
+
+-- Q3. EXTACT THE LAST NUMBER AFTER THE - AND CREATE OTHER COLUMN AND UPDATE IT?-----------------
+--ANS- 
+      
+      SELECT DISTINCT order_id FROM New_sales_data_9feb;   
+      SELECT order_id ,SUBSTRING (order_id,-6,6) AS ORDER_LAST_INITIALS FROM New_sales_data_9feb;
+      
+---------------------------------------------
+
+--Q 4)  FLAG ,IF DISCOUNT IS GREATER THEN 0 THEN  YES ELSE FALSE AND PUT IT IN NEW COLUMN FRO EVERY ORDER ID.---
+--ANS-
+
+     SELECT*,CASE WHEN DISCOUNT > '0' THEN 'YES' ELSE 'FALSE' END AS IF_DISCOUNTED FROM New_sales_data_9feb;
+
+---------------------------------------------
+
+--Q 5)  FIND OUT THE FINAL PROFIT AND PUT IT IN COLUMN FOR EVERY ORDER ID.--------
+--ANS-
+
+    SELECT*,CASE WHEN PROFIT > '0' THEN 'PROFIT'
+              WHEN PROFIT < '0' THEN 'LOSS'
+              ELSE 'NO PROFIT NO LOSS'
+              END AS SALES_STATUS 
+              FROM New_sales_data_9feb;
+              
+------------------------------------------------------
+
+--Q 6)  FIND OUT HOW MUCH DAYS TAKEN FOR EACH ORDER TO PROCESS FOR THE SHIPMENT FOR EVERY ORDER ID.---
+--ANS-
+
+     SELECT DATEDIFF(DAY,SHIP_DATE,ORDER_DATE) FROM New_sales_data_9feb;
+
+     SELECT DATEDIFF(DAY,ORDER_DATE,SHIP_DATE) FROM New_sales_data_9feb; 
+
+------------------------------------------------------
+
+--Q 7) FLAG THE PROCESS DAY AS BY RATING IF IT TAKES LESS OR EQUAL 3  DAYS MAKE 5,LESS OR EQUAL THAN 6 DAYS BUT MORE THAN 3 MAKE 4,LESS THAN 10 BUT MORE THAN 6 MAKE 3,MORE THAN 10 MAKE IT 2 FOR EVERY ORDER ID?--
+--ANS-   
+
+               select *, case when DATEDIFF (DAY,SHIP_DATE,ORDER_DATE) <= 3 then '5'
+                when DATEDIFF (DAY,SHIP_DATE,ORDER_DATE) <= 6  then '4'
+                when DATEDIFF (DAY,SHIP_DATE,ORDER_DATE) <=10  then '4'
+                else '2' end as the_process from New_sales_data_9feb;
+                
+                --------or------
+                
+                select *, case 
+                when DATEDIFF (DAY,SHIP_DATE,ORDER_DATE) <= 3 then '5'
+                when DATEDIFF (DAY,SHIP_DATE,ORDER_DATE) <= 6  and DATEDIFF (DAY,SHIP_DATE,ORDER_DATE) > '3' then '4'
+                when DATEDIFF (DAY,SHIP_DATE,ORDER_DATE) <=10  and DATEDIFF (DAY,SHIP_DATE,ORDER_DATE) > '6' then '3'
+                else '2' 
+                end as the_process from New_sales_data_9feb;
+                
+                --------or------
+                select *, case 
+                when DATEDIFF (DAY,SHIP_DATE,ORDER_DATE) <= 3 then '*****'
+                when DATEDIFF (DAY,SHIP_DATE,ORDER_DATE) <= 6 and DATEDIFF (DAY,SHIP_DATE,ORDER_DATE) > '3' then '****'
+                when DATEDIFF (DAY,SHIP_DATE,ORDER_DATE) <=10  and DATEDIFF (DAY,SHIP_DATE,ORDER_DATE) > '6' then '***'
+                else '**' 
+                end as the_process from New_sales_data_9feb;
+
+  -------------------------------
